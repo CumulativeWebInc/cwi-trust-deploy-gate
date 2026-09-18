@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- Fixture: REPRODUCES the Pages cache split-brain (2026-09-17).
+     index.html and stage-logic.js BOTH changed in one deploy, but the
+     import URL carries no version query -> the browser may serve the
+     OLD cached stage-logic.js against the NEW page. -->
+<html>
+<body>
+  <script type="module">
+    import { boot } from './stage-logic.js';
+    import { stable } from './stable.js';
+    boot();
+    stable();
+  </script>
+</body>
+</html>

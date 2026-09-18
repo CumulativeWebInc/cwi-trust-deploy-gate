@@ -1,0 +1,8 @@
+# Fixture: a deploy tree with leaked secret-shaped values.
+# ALL values below are obviously fake — the gate flags the SHAPE, never the value.
+api_key = "sk-test-FAKE-0000"
+DB_PASSWORD=hunter2-fake-notreal
+stripe_token = "tok_test_FAKE_1234"
+-----BEGIN RSA PRIVATE KEY-----
+MIIFakeNotARealKeyMaterial0000000000
+-----END RSA PRIVATE KEY-----

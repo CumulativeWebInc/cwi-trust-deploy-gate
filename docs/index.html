@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CWI Deploy Gate — pre-flight checks that catch what unit tests miss</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 860px; margin: 0 auto;
+         padding: 2rem 1.25rem 4rem; background: #0d1117; color: #e6edf3; line-height: 1.6; }
+  h1 { font-size: 2rem; margin-bottom: .25rem; }
+  h2 { margin-top: 2.5rem; border-bottom: 1px solid #30363d; padding-bottom: .4rem; }
+  code, pre { font-family: ui-monospace, monospace; }
+  pre { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; overflow-x: auto; }
+  code { background: #161b22; padding: .15em .4em; border-radius: 4px; }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { border: 1px solid #30363d; padding: .6rem .8rem; text-align: left; vertical-align: top; }
+  th { background: #161b22; }
+  .tag { display: inline-block; background: #1f6feb; color: #fff; font-size: .75rem;
+         padding: .2em .7em; border-radius: 999px; margin-bottom: 1rem; }
+  .verdict { background: #0d2818; border: 1px solid #2ea043; border-radius: 6px; padding: 1rem 1.25rem; }
+  a { color: #58a6ff; }
+  .muted { color: #8b949e; }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #30363d; }
+</style>
+</head>
+<body>
+<span class="tag">CWI trust layer · Phase 1, Wave 2 · v1.0.0</span>
+<h1>CWI Deploy Gate</h1>
+<p><strong>Pre-flight checks that catch the bug classes unit tests miss.</strong></p>
+<p>Every check in this gate is a scar CWI already paid for. Unit tests are green,
+the deploy ships, and then boot dies on Black's phone — because the failure class
+lived in the seam <em>between</em> the tests and the deploy: a scope the tests never
+evaluated, a label hardcoded at build time, a cache split-brain between two changed
+files, a secret committed by accident. This gate encodes those scars as
+machine-checkable rules and runs before the deploy goes out.</p>
+<p>A zero-dependency Node CLI (<code>node &gt;= 18</code>). No network, no build step.</p>
+
+<h2>The four checks</h2>
+<table>
+<tr><th>Check</th><th>What it flags</th><th>The incident it encodes</th></tr>
+<tr>
+  <td><code>scope</code></td>
+  <td>Identifier referenced from a scope where none of its declarations is visible.
+      Scope-<em>identity</em> analysis (parent-linked scopes, not bare brace depth) —
+      sibling scopes distinguished, <code>var</code> hoisting and braceless bodies handled.</td>
+  <td>gear-ledger 2026-09-17 — <code>DISTRICT_BEACONS</code> declared <code>const</code>
+      inside a <code>.then()</code> callback, referenced at module top level →
+      <code>ReferenceError</code> killed boot before the first frame. 141 unit tests passed;
+      none evaluated the page's inline module script.</td>
+</tr>
+<tr>
+  <td><code>labels</code></td>
+  <td>Literal <code>SAMPLE</code>/<code>LIVE</code> badge with no mode variable driving it.
+      Passes on mode ternaries, mode-keyed label maps, and data bindings.</td>
+  <td>3D world 2026-09-18 — billboard <code>SAMPLE</code> badge and ticker <code>SIM</code> tag
+      hardcoded at scene build, never followed the WorldClient mode.</td>
+</tr>
+<tr>
+  <td><code>versioning</code></td>
+  <td>Importer <em>and</em> its module both changed, but the import URL carries no
+      <code>?v=</code> query. Resolves relative module URLs from changed importers
+      (<code>import</code>/dynamic <code>import()</code>/<code>&lt;script src&gt;</code>/workers).</td>
+  <td>Pages cache split-brain 2026-09-17 — new <code>index.html</code> + new
+      <code>stage-logic.js</code> shipped together; the browser served the OLD cached
+      module against the new page.</td>
+</tr>
+<tr>
+  <td><code>secrets</code></td>
+  <td>Secret-shaped filenames (<code>.env</code>, <code>.pem</code>, <code>.key</code>,
+      <code>id_rsa*</code>, <code>*secret*</code>, <code>*credential*</code>),
+      secret-shaped <code>KEY/TOKEN/SECRET/PASSWORD/CREDENTIAL</code> assignments,
+      private-key blocks. <strong>Values are never printed</strong> — findings name
+      file, line, and key shape only.</td>
+  <td>Standing security order (2026-09-15): encrypt all CWI data — secrets never ship. Preventive.</td>
+</tr>
+</table>
+
+<h2>Usage</h2>
+<pre><code># scan the current tree (all checks)
+node bin/deploy-gate.js .
+
+# only some checks, machine output for CI
+node bin/deploy-gate.js --checks scope,labels,versioning --json ./dist
+
+# versioning check against an explicit changed-file list (no git needed)
+node bin/deploy-gate.js --checks versioning --changed index.html,stage-logic.js ./dist
+
+# skip paths
+node bin/deploy-gate.js --exclude 'test/fixtures/secret-scan/**,docs/**' .</code></pre>
+<p>Exit codes: <code>0</code> = clean, <code>1</code> = findings, <code>2</code> = usage/operational error.</p>
+<p>Per-line suppression for intentional exceptions:
+<code>billboard.textContent = 'SAMPLE'; // deploy-gate: allow — demo fixture</code></p>
+
+<h2>Dry-run catches</h2>
+<p>Ship gate per the trust-layer plan: the gate had to catch real historical bug classes
+in dry-run before v1 could ship. Full record with incident references:
+<a href="https://github.com/CumulativeWebInc/cwi-trust-deploy-gate/blob/main/docs/CATCHES.md">docs/CATCHES.md</a>.</p>
+<ul>
+  <li><strong>scope</strong> — reproduced the <code>DISTRICT_BEACONS</code> pattern → 2 findings, clean fixture → 0</li>
+  <li><strong>labels</strong> — hardcoded badges in HTML + JS → 4 findings; mode-driven forms → 0</li>
+  <li><strong>versioning</strong> — unversioned import of a changed module → exactly 1 finding; versioned + unchanged → 0</li>
+  <li><strong>secrets</strong> — fake-shaped assignments, key block, <code>.key</code> filename → 5 findings, values never printed</li>
+</ul>
+<div class="verdict">
+  <strong>Kill-rule verdict: 4/4 bug classes caught in dry-run on 2026-09-18. The gate ships.</strong><br>
+  <span class="muted">Kill rule: catches zero real historical bug classes in dry-run before v1 → do not ship.
+  (<a href="https://github.com/CumulativeWebInc/cwi-trust-deploy-gate/blob/main/docs/KILL-RULE.md">docs/KILL-RULE.md</a>)</span>
+</div>
+
+<h2>Tests</h2>
+<p><code>node test/test.js</code> — 19 tests, zero dependencies. Each historical incident is
+reproduced as a fixture under <code>test/fixtures/</code>; the suite asserts the gate flags
+the bug fixtures and passes the clean fixtures.</p>
+
+<h2>Source</h2>
+<p><a href="https://github.com/CumulativeWebInc/cwi-trust-deploy-gate">github.com/CumulativeWebInc/cwi-trust-deploy-gate</a> · MIT license</p>
+
+<footer>
+<p><strong>Author</strong></p>
+<p>Henry Pitts — known as Black Lansky — is the founder of Cumulative Web Inc and a systems architect working at the top of the technical track: he designs the systems, defines what "done" means, and verifies that it holds. His operating law is "verified or it didn't happen." He is building the trust layer underneath the AI-agent economy — the infrastructure that proves what agents build.</p>
+<p class="muted">Trust-layer program · Phase 1, Wave 2, product #5 · shipped 2026-09-18</p>
+</footer>
+</body>
+</html>

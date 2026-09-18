@@ -1,0 +1,6 @@
+# Fixture: CLEAN — no secret-shaped values.
+app_name = deploy-gate
+log_level = info
+public_endpoint = https://example.com/api
+placeholder_token = "xxx"
+empty_password =
