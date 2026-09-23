@@ -84,7 +84,7 @@ redacted.
 ## Tests
 
 ```bash
-node test/test.js   # 19 tests, zero dependencies
+node test/test.js   # 21 tests, zero dependencies
 ```
 
 The suite reproduces each historical incident as a fixture

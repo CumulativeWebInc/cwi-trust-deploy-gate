@@ -5,7 +5,7 @@ classes in dry-run before v1 could ship. Each catch below reproduces the actual
 failure pattern as a fixture under `test/fixtures/` and is asserted by
 `test/test.js`. **Result: 4/4 bug classes caught. The gate ships.**
 
-All fixtures verified 2026-09-18. Test command: `node test/test.js` (19 tests,
+All fixtures verified 2026-09-18. Test command: `node test/test.js` (21 tests,
 zero dependencies).
 
 ---

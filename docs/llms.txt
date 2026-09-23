@@ -1,0 +1,39 @@
+# CWI Deploy Gate
+
+> Pre-flight checks that catch the bug classes unit tests miss.
+
+- Live docs: https://cumulativewebinc.github.io/cwi-trust-deploy-gate/
+- Repo: https://github.com/CumulativeWebInc/cwi-trust-deploy-gate
+- CLI: `node bin/deploy-gate.js <dir>` — zero dependencies, Node >= 18.
+
+## The four checks
+
+Every check is a scar CWI already paid for (see docs/CATCHES.md):
+
+1. `scope` — identifier referenced from a scope where none of its declarations
+   is visible (gear-ledger 2026-09-17: `DISTRICT_BEACONS` ReferenceError killed
+   boot before the first frame).
+2. `labels` — literal `SAMPLE`/`LIVE` badge with no mode variable driving it
+   (3D world 2026-09-18: hardcoded badges never followed the WorldClient mode).
+3. `versioning` — importer AND its module both changed, but the import URL
+   carries no `?v=` query (Pages cache split-brain 2026-09-17).
+4. `secrets` — secret-shaped filenames, secret-shaped KEY/TOKEN/SECRET/
+   PASSWORD/CREDENTIAL assignments, private-key blocks (preventive; the scan
+   never prints values — findings name file, line, and key shape only).
+
+## Honest limits
+
+- Static checks only: they catch known bug classes, not novel ones.
+- The secret scan's test fixtures use obviously fake values (`<redacted>`).
+- Kill rule: catches zero real historical bug classes in dry-run before v1 →
+  do not ship. (It caught 4/4 — see docs/CATCHES.md.)
+
+## Tests
+
+`node test/test.js` — 21/21 green, zero dependencies.
+
+## Machine-readable
+
+- docs/.well-known/agent-card.json — agent discovery card
+
+© 2026 Cumulative Web Inc · hp@cumulativeweb.com

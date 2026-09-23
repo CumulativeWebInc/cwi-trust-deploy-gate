@@ -3,7 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CWI Deploy Gate — pre-flight checks that catch what unit tests miss</title>
+<title>CWI Deploy Gate — pre-flight checks that catch what unit tests miss · Cumulative Web Inc</title>
+<meta name="description" content="Pre-flight checks that catch the bug classes unit tests miss: scope, labels, versioning, secrets. A zero-dependency Node CLI — every check is a scar CWI already paid for.">
+<meta property="og:title" content="CWI Deploy Gate · Cumulative Web Inc">
+<meta property="og:description" content="Pre-flight checks that catch the bug classes unit tests miss. Zero-dependency Node CLI. Every check is a scar CWI already paid for.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cumulativewebinc.github.io/cwi-trust-deploy-gate/">
+<meta property="og:image" content="https://cumulativewebinc.github.io/cwi-trust-deploy-gate/brand/cwi-logo.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CWI Deploy Gate · Cumulative Web Inc">
+<meta name="twitter:description" content="Pre-flight deploy checks: scope, labels, versioning, secrets. Zero deps, catches what unit tests miss.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"CWI Deploy Gate","url":"https://cumulativewebinc.github.io/cwi-trust-deploy-gate/","applicationCategory":"DeveloperApplication","operatingSystem":"Node.js >= 18","softwareVersion":"1.0.0","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"Cumulative Web Inc","url":"https://cumulativeweb.com"},"description":"Pre-flight checks that catch the bug classes unit tests miss: scope-identity analysis, hardcoded SAMPLE/LIVE labels, Pages cache versioning, secret scanning (never prints values). Zero-dependency Node CLI."}
+</script>
 <style>
   :root { color-scheme: dark; }
   body { font-family: system-ui, -apple-system, sans-serif; max-width: 860px; margin: 0 auto;
@@ -26,8 +38,11 @@
 </style>
 </head>
 <body>
-<span class="tag">CWI trust layer · Phase 1, Wave 2 · v1.0.0</span>
-<h1>CWI Deploy Gate</h1>
+<div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem">
+<img src="brand/cwi-logo.jpg" alt="Cumulative Web Inc logo" style="width:56px;height:56px;border-radius:50%;object-fit:cover">
+<div><span class="tag">CWI trust layer · Phase 1, Wave 2 · v1.0.0</span>
+<h1 style="margin:.15em 0 0">CWI Deploy Gate</h1></div>
+</div>
 <p><strong>Pre-flight checks that catch the bug classes unit tests miss.</strong></p>
 <p>Every check in this gate is a scar CWI already paid for. Unit tests are green,
 the deploy ships, and then boot dies on Black's phone — because the failure class
@@ -110,17 +125,25 @@ in dry-run before v1 could ship. Full record with incident references:
 </div>
 
 <h2>Tests</h2>
-<p><code>node test/test.js</code> — 19 tests, zero dependencies. Each historical incident is
+<p><code>node test/test.js</code> — 21 tests, zero dependencies. Each historical incident is
 reproduced as a fixture under <code>test/fixtures/</code>; the suite asserts the gate flags
 the bug fixtures and passes the clean fixtures.</p>
 
 <h2>Source</h2>
 <p><a href="https://github.com/CumulativeWebInc/cwi-trust-deploy-gate">github.com/CumulativeWebInc/cwi-trust-deploy-gate</a> · MIT license</p>
 
+<section style="text-align:center;border:1px solid #30363d;border-radius:10px;padding:1.5rem;margin:2rem 0">
+<h2 style="margin-top:0">Stop shipping the bugs your tests can't see</h2>
+<p class="muted">Deploy Gate is a CWI Trust Layer product — pre-flight gates for teams shipping web artifacts, plus custom scar-encoding for your stack.</p>
+<p><a href="mailto:hp@cumulativeweb.com?subject=Deploy%20Gate%20for%20my%20team" style="display:inline-block;background:#f5b301;color:#141414;font-weight:700;border-radius:8px;padding:.7rem 1.2rem;text-decoration:none">Contact hp@cumulativeweb.com</a>
+<a href="https://cumulativewebinc.github.io/cwi-trust-deploy-gate/" style="display:inline-block;border:1px solid #30363d;border-radius:8px;padding:.7rem 1.2rem;margin-left:.6rem;color:inherit">Try the live docs →</a></p>
+<p class="muted" style="font-size:.85rem">A Cumulative Web Inc product. Pricing on request — no prices are published without approval.</p>
+</section>
+
 <footer>
 <p><strong>Author</strong></p>
 <p>Henry Pitts — known as Black Lansky — is the founder of Cumulative Web Inc and a systems architect working at the top of the technical track: he designs the systems, defines what "done" means, and verifies that it holds. His operating law is "verified or it didn't happen." He is building the trust layer underneath the AI-agent economy — the infrastructure that proves what agents build.</p>
-<p class="muted">Trust-layer program · Phase 1, Wave 2, product #5 · shipped 2026-09-18</p>
+<p class="muted">© 2026 Cumulative Web Inc · Trust-layer program · Phase 1, Wave 2, product #5 · shipped 2026-09-18 · <a href="mailto:hp@cumulativeweb.com">hp@cumulativeweb.com</a> · <a href="llms.txt">llms.txt</a> · <a href=".well-known/agent-card.json">agent card</a></p>
 </footer>
 </body>
 </html>
