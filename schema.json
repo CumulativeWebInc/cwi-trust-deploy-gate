@@ -1,0 +1,16 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Deploy Gate (trust-layer #5)",
+  "url": "https://cumulativewebinc.github.io/cwi-trust-deploy-gate/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "author": {
+    "@type": "Organization",
+    "name": "Cumulative Web Inc",
+    "url": "https://cumulativeweb.com/"
+  },
+  "description": "Preflight CLI encoding CWI's real deploy failure classes, with SAMPLE/LIVE lab modes.",
+  "schema_version": "1.0.0",
+  "disclaimer": "Lab data: SAMPLE mode uses sample data."
+}
